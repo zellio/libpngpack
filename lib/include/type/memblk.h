@@ -4,10 +4,13 @@
 #define __LIBPNGPACK_TYPE_MEMBLK_H__ 1
 
 
+#include "type/byte.h"
+
 #include <openssl/evp.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <sys/types.h>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,7 +25,6 @@ extern "C" {
 #define MEMBLK_SEEK_END 3
 
 
-typedef uint8_t byte;
 
 typedef struct memblk memblk_t;
 struct memblk {
@@ -40,6 +42,7 @@ ssize_t memblk_write(memblk_t* block, byte* data, size_t count);
 ssize_t memblk_read(memblk_t* block, byte* data, size_t count);
 ssize_t memblk_seek(memblk_t* block, size_t offset, int whence);
 ssize_t memblk_rewind(memblk_t* block);
+ssize_t memblk_erase(memblk_t* block);
 
 ssize_t memblk_write_uint32(memblk_t* block, uint32_t ui32);
 ssize_t memblk_read_uint32(memblk_t* block, uint32_t* ui32_ptr);

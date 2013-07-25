@@ -89,6 +89,14 @@ ssize_t memblk_rewind(memblk_t* block) {
     return memblk_seek(block, 0, MEMBLK_SEEK_SET);
 }
 
+ssize_t memblk_erase(memblk_t* block) {
+    byte* ptr = block->data;
+    size_t size = block->size;
+    while (size--) *ptr++ = 0x00;
+    return 0;
+}
+
+
 ssize_t memblk_write_uint32(memblk_t* block, uint32_t ui32) {
     byte* ptr = block->ptr;
     if (ptr + 4 > block->end)
