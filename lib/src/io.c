@@ -3,7 +3,6 @@
 #include "io.h"
 
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
 
 
@@ -37,4 +36,38 @@ char* png_block_to_s(png_block_t* block) {
     snprintf(ptr, 5, "%s", block->crc);
 
     return str;
+}
+
+int memblk_fwrite(memblk_t* block, FILE* fp) {
+    if (block == NULL)
+        return -1;
+
+    if (fp == NULL)
+        return -2;
+
+    char* str = memblk_to_s(block);
+    if (str == NULL)
+        return -3;
+
+    fwrite(str, sizeof(byte), block->size, fp);
+    free(str);
+
+    return 0;
+}
+
+int png_block_fwrite(png_block_t* block, FILE* fp) {
+    if (block == NULL)
+        return -1;
+
+    if (fp == NULL)
+        return -2;
+
+    char* str = png_block_to_s(block);
+    if (str == NULL)
+        return -3;
+
+    fwrite(str, sizeof(byte), png_block_length_as_i(block) + 12, fp);
+    free(str);
+
+    return 0;
 }
