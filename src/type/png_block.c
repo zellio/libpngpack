@@ -59,10 +59,25 @@ int png_block_destroy(png_block_t* block) {
     if (block == NULL)
         return -1;
 
-    free(block->length);
-    free(block->type);
-    free(block->data);
-    free(block->crc);
+    if (block->length != NULL) {
+        free(block->length);
+        return -2;
+    }
+
+    if (block->type != NULL) {
+        free(block->type);
+        return -3;
+    }
+
+    if (block->data != NULL) {
+        free(block->data);
+        return -4;
+    }
+
+    if (block->crc != NULL) {
+        free(block->crc);
+        return -5;
+    }
 
     free(block);
 
