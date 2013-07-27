@@ -14,7 +14,9 @@ VPATH=$(SRCROOT):$(INCROOT):$(TSTROOT):$(OBJROOT)
 
 .PHONY: all clean
 
-all: memblk.o png_block.o io.o pack.o
+all: types io.o pack.o
+
+types: memblk.o png_block.o pngpack_context.o pngpack_context.o
 
 clean:
 	$(RM) $(OBJROOT)/*.o
@@ -25,6 +27,9 @@ memblk.o: type/memblk.c type/memblk.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
 png_block.o: type/png_block.c type/png_block.h
+	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
+
+pngpack_context.o: type/pngpack_context.c type/pngpack_context.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
 io.o: io.c io.h
