@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 
-png_node_t* png_ndoe_create(png_block_t* block) {
+png_node_t* png_node_create(png_block_t* block) {
     png_node_t* node = calloc(1, sizeof(png_node_t));
     if (node == NULL)
         return NULL;
@@ -70,6 +70,9 @@ int png_clear(png_t* png) {
         current = current->next;
         png_node_destroy(ptr);
     }
+
+    head->next = tail;
+    tail->prev = head;
 
     png->length = 2;
 
