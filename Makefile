@@ -1,4 +1,3 @@
-
 CC=clang
 RM=rm -Rf
 
@@ -23,7 +22,6 @@ ioblob: io_memblk.o io_png_block.o
 
 clean:
 	$(RM) $(OBJROOT)/*.o
-	$(RM) pngpack
 
 
 # Types
