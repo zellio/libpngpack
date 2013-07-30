@@ -6,8 +6,15 @@
 #include <zlib.h>
 
 
-png_block_t* png_block_create(uint32_t type, uint32_t length, byte* data) {
+png_block_t* png_block_create_empty(void) {
     png_block_t* png_block = calloc(1, sizeof(png_block_t));
+    if (png_block == NULL)
+        return NULL;
+    return png_block;
+}
+
+png_block_t* png_block_create(uint32_t type, uint32_t length, byte* data) {
+    png_block_t* png_block = png_block_create_empty();
     if (png_block == NULL)
         goto PNG_BLOCK_CREATE_CLEANUP;
 

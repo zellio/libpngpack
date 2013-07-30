@@ -26,6 +26,7 @@ struct png_block {
 };
 
 
+png_block_t* png_block_create_empty(void);
 png_block_t* png_block_create(uint32_t type, uint32_t size, byte* data);
 int png_block_destroy(png_block_t* block);
 
