@@ -9,7 +9,7 @@ char* png_block_to_s(png_block_t* block) {
     if (block == NULL)
         return NULL;
 
-    size_t block_size = png_block_length_as_i(block);
+    size_t block_size = png_block_get_length(block);
     char* str = calloc(block_size + 13, sizeof(byte));
     if (str == NULL)
         return NULL;
@@ -35,7 +35,7 @@ int png_block_io_write(png_block_t* block, FILE* fp) {
     if (str == NULL)
         return -3;
 
-    fwrite(str, sizeof(byte), png_block_length_as_i(block) + 12, fp);
+    fwrite(str, sizeof(byte), png_block_get_length(block) + 12, fp);
     free(str);
 
     return 0;
@@ -56,7 +56,7 @@ int png_block_io_read(png_block_t* block, FILE* fp) {
     fread(int_buffer, sizeof(byte), 4, fp);
     block->length = int_buffer;
 
-    size_t length = png_block_length_as_i(block);
+    size_t length = png_block_get_length(block);
 
     int_buffer = calloc(4, sizeof(byte));
     if (int_buffer == NULL)

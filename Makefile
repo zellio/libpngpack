@@ -18,7 +18,7 @@ all: typeblob ioblob
 typeblob: type_memblk.o type_png_block.o type_pngpack_context.o \
 	type_pngpack_context.o type_png.o
 
-ioblob: io_memblk.o io_png_block.o
+ioblob: io_memblk.o io_png_block.o io_png.o
 
 clean:
 	$(RM) $(OBJROOT)/*.o
@@ -37,7 +37,6 @@ type_pngpack_context.o: type/pngpack_context.c type/pngpack_context.h
 type_png.o: type/png.c type/png.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-
 # IO
 io_memblk.o: io/memblk.c io/memblk.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
@@ -45,11 +44,11 @@ io_memblk.o: io/memblk.c io/memblk.h
 io_png_block.o: io/png_block.c io/png_block.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-
-
+io_png.o: io/png.c io/png.h
+	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
 # Other
-io.o: io.c io.h#
+io.o: io.c io.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
 pack.o: pack.c pack.h

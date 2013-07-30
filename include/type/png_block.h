@@ -32,10 +32,12 @@ int png_block_destroy(png_block_t* block);
 
 int png_block_calculate_crc(png_block_t* block);
 
-int32_t png_block_length_as_i(png_block_t* block);
-int32_t png_block_type_as_i(png_block_t* block);
-int32_t png_block_crc_as_i(png_block_t* block);
-
+uint32_t png_block_get_length(png_block_t* block);
+uint32_t png_block_set_length(png_block_t* block, uint32_t value);
+uint32_t png_block_get_type(png_block_t* block);
+uint32_t png_block_set_type(png_block_t* block, uint32_t value);
+uint32_t png_block_get_crc(png_block_t* block);
+uint32_t png_block_set_crc(png_block_t* block, uint32_t value);
 
 
 #ifdef __cplusplus

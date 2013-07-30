@@ -6,49 +6,68 @@
 #include <zlib.h>
 
 
-png_block_t* png_block_create_empty(void) {
-    png_block_t* png_block = calloc(1, sizeof(png_block_t));
-    if (png_block == NULL)
-        return NULL;
-    return png_block;
+static inline void unpack_uint32(byte* ptr, uint32_t* ui32) {
+    *ui32 = 0;
+    *ui32 += ((*ptr++) << 24);
+    *ui32 += ((*ptr++) << 16);
+    *ui32 += ((*ptr++) << 8);
+    *ui32 += ((*ptr++) << 0);
 }
 
-png_block_t* png_block_create(uint32_t type, uint32_t length, byte* data) {
-    png_block_t* png_block = png_block_create_empty();
-    if (png_block == NULL)
+static inline void pack_uint32(byte* ptr, uint32_t ui32) {
+    *ptr++ = (ui32 >> 24) & 0xff;
+    *ptr++ = (ui32 >> 16) & 0xff;
+    *ptr++ = (ui32 >> 8) & 0xff;
+    *ptr++ = (ui32) & 0xff;
+}
+
+png_block_t* png_block_create_empty(void) {
+    png_block_t* block = calloc(1, sizeof(png_block_t));
+    if (block == NULL)
+        goto PNG_BLOCK_CREATE_EMPTY_CLEANUP;
+
+    block->length = calloc(4, sizeof(byte));
+    if (block->length == NULL)
+        goto PNG_BLOCK_CREATE_EMPTY_CLEANUP;
+
+    block->type = calloc(4, sizeof(byte));
+    if (block->type == NULL)
+        goto PNG_BLOCK_CREATE_EMPTY_CLEANUP;
+
+    block->data = NULL;
+
+    block->crc = calloc(4, sizeof(byte));
+    if (block->crc == NULL)
+        goto PNG_BLOCK_CREATE_EMPTY_CLEANUP;
+
+    return block;
+
+ PNG_BLOCK_CREATE_EMPTY_CLEANUP:
+    png_block_destroy(block);
+    return NULL;
+}
+
+png_block_t* png_block_create(uint32_t type, uint32_t size, byte* data) {
+    png_block_t* block = png_block_create_empty();
+    if (block == NULL)
         goto PNG_BLOCK_CREATE_CLEANUP;
 
-    byte* length_ptr = calloc(4, sizeof(byte));
-    if (length_ptr == NULL)
-        goto PNG_BLOCK_CREATE_CLEANUP;
-    png_block->length = length_ptr;
-    *length_ptr++ = (length >> 24) & 0xff;
-    *length_ptr++ = (length >> 16) & 0xff;
-    *length_ptr++ = (length >> 8) & 0xff;
-    *length_ptr++ = (length) & 0xff;
+    png_block_set_length(block, size);
+    png_block_set_type(block, type);
 
-    byte* type_ptr = calloc(4, sizeof(byte));
-    if (type_ptr == NULL)
-        goto PNG_BLOCK_CREATE_CLEANUP;
-    png_block->type = type_ptr;
-    *type_ptr++ = (type >> 24) & 0xff;
-    *type_ptr++ = (type >> 16) & 0xff;
-    *type_ptr++ = (type >> 8) & 0xff;
-    *type_ptr++ = (type) & 0xff;
-
-    byte* data_ptr = calloc(length, sizeof(byte));
+    byte* data_ptr = calloc(size, sizeof(byte));
     if (data_ptr == NULL)
         goto PNG_BLOCK_CREATE_CLEANUP;
-    png_block->data = data_ptr;
-    for (size_t size = length; size; size--)
+    block->data = data_ptr;
+    for (; size; size--)
         *data_ptr++ = *data++;
 
-    png_block_calculate_crc(png_block);
+    png_block_calculate_crc(block);
 
-    return png_block;
+    return block;
 
  PNG_BLOCK_CREATE_CLEANUP:
-    png_block_destroy(png_block);
+    png_block_destroy(block);
     return NULL;
 }
 
@@ -81,45 +100,46 @@ int png_block_destroy(png_block_t* block) {
     return 0;
 }
 
-int png_block_calculate_crc(png_block_t* png_block) {
-    if (png_block == NULL)
+int png_block_calculate_crc(png_block_t* block) {
+    if (block == NULL)
         return -1;
 
-    byte* crc_ptr = calloc(4, sizeof(byte));
-    if (crc_ptr == NULL)
-        return -2;
-
-    size_t length = png_block_length_as_i(png_block);
+    size_t length = png_block_get_length(block);
     uint64_t crc = crc32(0L, Z_NULL, 0);
-    crc = crc32(crc, png_block->type, 4);
-    crc = crc32(crc, png_block->data, length);
-    png_block->crc = crc_ptr;
-    *crc_ptr++ = (crc >> 24) & 0xff;
-    *crc_ptr++ = (crc >> 16) & 0xff;
-    *crc_ptr++ = (crc >> 8) & 0xff;
-    *crc_ptr++ = (crc) & 0xff;
+    crc = crc32(crc, block->type, 4);
+    crc = crc32(crc, block->data, length);
+
+    png_block_set_crc(block, crc);
 
     return 0;
 }
 
-
-static inline int32_t bytes_to_int(byte* ptr) {
-    int32_t ui32 = 0;
-    ui32 += ((*ptr++) << 24);
-    ui32 += ((*ptr++) << 16);
-    ui32 += ((*ptr++) << 8);
-    ui32 += ((*ptr++) << 0);
+uint32_t png_block_get_length(png_block_t* block) {
+    uint32_t ui32;
+    unpack_uint32(block->length, &ui32);
     return ui32;
 }
-
-int32_t png_block_length_as_i(png_block_t* block) {
-    return bytes_to_int(block->length);
+uint32_t png_block_set_length(png_block_t* block, uint32_t value) {
+    pack_uint32(block->type, value);
+    return value;
 }
 
-int32_t png_block_type_as_i(png_block_t* block) {
-    return bytes_to_int(block->type);
+uint32_t png_block_get_type(png_block_t* block) {
+    uint32_t ui32;
+    unpack_uint32(block->type, &ui32);
+    return ui32;
+}
+uint32_t png_block_set_type(png_block_t* block, uint32_t value) {
+    pack_uint32(block->type, value);
+    return value;
 }
 
-int32_t png_block_crc_as_i(png_block_t* block) {
-    return bytes_to_int(block->crc);
+uint32_t png_block_get_crc(png_block_t* block) {
+    uint32_t ui32;
+    unpack_uint32(block->crc, &ui32);
+    return ui32;
+}
+uint32_t png_block_set_crc(png_block_t* block, uint32_t value) {
+    pack_uint32(block->type, value);
+    return value;
 }
