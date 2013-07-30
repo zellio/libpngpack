@@ -14,28 +14,44 @@ VPATH=$(SRCROOT):$(INCROOT):$(TSTROOT):$(OBJROOT)
 
 .PHONY: all clean
 
-all: types io.o pack.o
+all: typeblob ioblob
 
-types: memblk.o png_block.o pngpack_context.o pngpack_context.o png.o
+typeblob: type_memblk.o type_png_block.o type_pngpack_context.o \
+	type_pngpack_context.o type_png.o
+
+ioblob: io_memblk.o io_png_block.o
 
 clean:
 	$(RM) $(OBJROOT)/*.o
 	$(RM) pngpack
 
 
-memblk.o: type/memblk.c type/memblk.h
+# Types
+type_memblk.o: type/memblk.c type/memblk.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-png_block.o: type/png_block.c type/png_block.h
+type_png_block.o: type/png_block.c type/png_block.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-pngpack_context.o: type/pngpack_context.c type/pngpack_context.h
+type_pngpack_context.o: type/pngpack_context.c type/pngpack_context.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-png.o: type/png.c type/png.h
+type_png.o: type/png.c type/png.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-io.o: io.c io.h
+
+# IO
+io_memblk.o: io/memblk.c io/memblk.h
+	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
+
+io_png_block.o: io/png_block.c io/png_block.h
+	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
+
+
+
+
+# Other
+io.o: io.c io.h#
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
 pack.o: pack.c pack.h
