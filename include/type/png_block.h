@@ -30,6 +30,8 @@ png_block_t* png_block_create_empty(void);
 png_block_t* png_block_create(uint32_t type, uint32_t size, byte* data);
 int png_block_destroy(png_block_t* block);
 
+int png_block_calculate_crc(png_block_t* block);
+
 int32_t png_block_length_as_i(png_block_t* block);
 int32_t png_block_type_as_i(png_block_t* block);
 int32_t png_block_crc_as_i(png_block_t* block);
