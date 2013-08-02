@@ -40,6 +40,9 @@ int png_io_write(png_t* png, FILE* fp) {
         return -2;
 
     char *str = png_to_s(png);
+    if (str == NULL)
+        return -3;
+
     fwrite(str, sizeof(byte), png->size, fp);
     free(str);
 
