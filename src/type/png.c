@@ -27,9 +27,12 @@ png_t* png_create(void) {
     if (png == NULL)
         return 0;
 
-    png_node_t* head =
-        png_node_create(png_block_create(0x89504E47, 0x0D0A1A0A, NULL));
-    png_node_t* tail = png_node_create(png_block_create(0x0, 0x49454e44, NULL));
+    png_block_t* head_block = png_block_create_empty();
+    png_block_set_type(head_block, 0x89504E47);
+    png_block_set_crc(head_block, 0x0D0A1A0A);
+
+    png_node_t* head = png_node_create(head_block);
+    png_node_t* tail = png_node_create(png_block_create(0x49454e44, 0x0, NULL));
 
     head->prev = NULL;
     head->next = tail;
