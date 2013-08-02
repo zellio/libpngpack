@@ -17,6 +17,9 @@ extern "C" {
 #endif
 
 
+#define PNG_BLOCK_BASE_SIZE 12
+
+
 typedef struct png_block png_block_t;
 struct png_block {
     byte* length;

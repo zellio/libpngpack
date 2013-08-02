@@ -21,6 +21,9 @@ extern "C" {
 #endif
 
 
+#define PNG_BASE_SIZE 20
+
+
 typedef struct png_node png_node_t;
 struct png_node {
     struct png_node* prev;
@@ -33,6 +36,7 @@ struct png {
     png_node_t* head;
     png_node_t* tail;
     size_t length;
+    size_t size;
 };
 
 png_node_t* png_node_create(png_block_t* block);

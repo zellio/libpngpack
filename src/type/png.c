@@ -44,6 +44,8 @@ png_t* png_create(void) {
     png->head = head;
     png->tail = tail;
 
+    png->size = PNG_BASE_SIZE;
+
     return png;
 }
 
@@ -78,6 +80,8 @@ int png_clear(png_t* png) {
     tail->prev = head;
 
     png->length = 2;
+
+    png->size = PNG_BASE_SIZE;
 
     return 0;
 }
@@ -133,6 +137,8 @@ int png_add(png_t* png, png_node_t* node) {
 
     png->length += 1;
 
+    png->size = PNG_BLOCK_BASE_SIZE + png_block_get_length(node->block);
+
     return 0;
 }
 
@@ -152,6 +158,8 @@ int png_add_at(png_t* png, png_node_t* node, size_t index) {
     at->next = node;
 
     png->length += 1;
+
+    png->size = PNG_BLOCK_BASE_SIZE + png_block_get_length(node->block);
 
     return 0;
 }
@@ -180,6 +188,8 @@ png_node_t* png_remove(png_t* png, png_node_t* node) {
 
     png->length -= 1;
 
+    png->size = PNG_BLOCK_BASE_SIZE - png_block_get_length(node->block);
+
     return node;
 
 }
@@ -203,6 +213,8 @@ png_node_t* png_remove_at(png_t* png, size_t index) {
 
     at->next = NULL;
     at->prev = NULL;
+
+    png->size = PNG_BLOCK_BASE_SIZE - png_block_get_length(at->block);
 
     return at;
 }
