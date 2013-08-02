@@ -6,19 +6,18 @@
 #include <zlib.h>
 
 
-static inline void unpack_uint32(byte* ptr, uint32_t* ui32) {
-    *ui32 = 0;
-    *ui32 += ((*ptr++) << 24);
-    *ui32 += ((*ptr++) << 16);
-    *ui32 += ((*ptr++) << 8);
-    *ui32 += ((*ptr++) << 0);
-}
-
-static inline void pack_uint32(byte* ptr, uint32_t ui32) {
+static inline void pack_uint32(byte *ptr, uint32_t ui32) {
     *ptr++ = (ui32 >> 24) & 0xff;
     *ptr++ = (ui32 >> 16) & 0xff;
     *ptr++ = (ui32 >> 8) & 0xff;
     *ptr++ = (ui32) & 0xff;
+}
+
+static inline void unpack_uint32(byte *ptr, uint32_t *ui32_ptr) {
+    *ui32_ptr = ((*ptr++) << 24);
+    *ui32_ptr += ((*ptr++) << 16);
+    *ui32_ptr += ((*ptr++) << 8);
+    *ui32_ptr += ((*ptr++) << 0);
 }
 
 png_block_t* png_block_create_empty(void) {
@@ -47,19 +46,19 @@ png_block_t* png_block_create_empty(void) {
     return NULL;
 }
 
-png_block_t* png_block_create(uint32_t type, uint32_t size, byte* data) {
+png_block_t* png_block_create(uint32_t length, uint32_t type, byte* data) {
     png_block_t* block = png_block_create_empty();
     if (block == NULL)
         goto PNG_BLOCK_CREATE_CLEANUP;
 
-    png_block_set_length(block, size);
+    png_block_set_length(block, length);
     png_block_set_type(block, type);
 
-    byte* data_ptr = calloc(size, sizeof(byte));
+    byte* data_ptr = calloc(length, sizeof(byte));
     if (data_ptr == NULL)
         goto PNG_BLOCK_CREATE_CLEANUP;
     block->data = data_ptr;
-    for (; size; size--)
+    for (; length; length--)
         *data_ptr++ = *data++;
 
     png_block_calculate_crc(block);
@@ -120,7 +119,7 @@ uint32_t png_block_get_length(png_block_t* block) {
     return ui32;
 }
 uint32_t png_block_set_length(png_block_t* block, uint32_t value) {
-    pack_uint32(block->type, value);
+    pack_uint32(block->length, value);
     return value;
 }
 
@@ -140,6 +139,6 @@ uint32_t png_block_get_crc(png_block_t* block) {
     return ui32;
 }
 uint32_t png_block_set_crc(png_block_t* block, uint32_t value) {
-    pack_uint32(block->type, value);
+    pack_uint32(block->crc, value);
     return value;
 }

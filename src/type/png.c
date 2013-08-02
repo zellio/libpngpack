@@ -32,7 +32,7 @@ png_t* png_create(void) {
     png_block_set_crc(head_block, 0x0D0A1A0A);
 
     png_node_t* head = png_node_create(head_block);
-    png_node_t* tail = png_node_create(png_block_create(0x49454e44, 0x0, NULL));
+    png_node_t* tail = png_node_create(png_block_create(0x0, 0x49454e44, NULL));
 
     head->prev = NULL;
     head->next = tail;
