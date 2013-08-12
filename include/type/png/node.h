@@ -4,6 +4,8 @@
 #define __LIBPNGPACK_TYPE_PNG_NODE_H__ 1
 
 
+#include "type/png/block.h"
+
 #include <stddef.h>
 #include <stdint.h>
 

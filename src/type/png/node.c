@@ -34,7 +34,7 @@ png_block_t *png_node_sentinel_head() {
 
 png_block_t *png_node_sentinel_tail() {
     static png_block_t *tail_block = NULL;
-    if (tail == NULL)
+    if (tail_block == NULL)
         tail_block = png_block_create(0x0, 0x49454e44, NULL);
     return tail_block;
 }
@@ -49,15 +49,15 @@ png_node_t *png_node_create_tail() {
 
 int png_block_is_head(png_block_t *block) {
     png_block_t *head_block = png_node_sentinel_head();
-    return block == head;
+    return block == head_block;
 }
 int png_node_is_head(png_node_t *node) {
     return png_block_is_head(node->block);
 }
 
 int png_block_is_tail(png_block_t *block) {
-    png_node_t *tail = png_node_sentinel_tail();
-    return block == tail;
+    png_block_t *tail_block = png_node_sentinel_tail();
+    return block == tail_block;
 }
 
 int png_node_is_tail(png_node_t *node) {
