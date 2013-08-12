@@ -28,7 +28,7 @@ clean:
 type_memblk.o: type/memblk.c type/memblk.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-type_png_block.o: type/png_block.c type/png_block.h
+type_png_block.o: type/png/block.c type/png/block.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
 type_pngpack_context.o: type/pngpack_context.c type/pngpack_context.h
