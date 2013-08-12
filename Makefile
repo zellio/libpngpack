@@ -15,36 +15,39 @@ VPATH=$(SRCROOT):$(INCROOT):$(TSTROOT):$(OBJROOT)
 
 all: typeblob ioblob
 
-typeblob: type_memblk.o type_png_block.o type_pngpack_context.o \
-	type_pngpack_context.o type_png.o
+typeblob: memblk.type.o png_block.type.o png_node.type.o png.type.o \
+	pngpack_context.type.o
 
-ioblob: io_memblk.o io_png_block.o io_png.o
+ioblob: memblk.io.o png_block.io.o png.io.o
 
 clean:
 	$(RM) $(OBJROOT)/*.o
 
 
 # Types
-type_memblk.o: type/memblk.c type/memblk.h
+memblk.type.o: type/memblk.c type/memblk.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-type_png_block.o: type/png/block.c type/png/block.h
+png_block.type.o: type/png/block.c type/png/block.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-type_pngpack_context.o: type/pngpack_context.c type/pngpack_context.h
+png_node.type.o: type/png/node.c type/png/node.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-type_png.o: type/png.c type/png.h
+png.type.o: type/png.c type/png.h
+	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
+
+pngpack_context.type.o: type/pngpack_context.c type/pngpack_context.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
 # IO
-io_memblk.o: io/memblk.c io/memblk.h
+memblk.io.o: io/memblk.c io/memblk.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-io_png_block.o: io/png_block.c io/png_block.h
+png_block.io.o: io/png_block.c io/png_block.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-io_png.o: io/png.c io/png.h
+png.io.o: io/png.c io/png.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
 # Other
