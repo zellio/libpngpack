@@ -17,7 +17,7 @@ png_t *png_create(void) {
     head->next = tail;
 
     tail->prev = head;
-    tail->prev = NULL;
+    tail->next = NULL;
 
     png->head = head;
     png->tail = tail;
@@ -127,7 +127,7 @@ int png_add(png_t *png, png_block_t *block) {
 
     png->length += 1;
 
-    png->size = PNG_BLOCK_BASE_SIZE + png_block_get_length(block);
+    png->size += PNG_BLOCK_BASE_SIZE + png_block_get_length(block);
 
     return 0;
 }
