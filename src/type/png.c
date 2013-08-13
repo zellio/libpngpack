@@ -94,7 +94,7 @@ int png_index_of(png_t* png, png_block_t* block) {
 
     int index = 0;
     for (png_node_t* current = png->head; current; current = current->next) {
-        if (block == current->block)
+        if (png_block_compare(block, current->block) == 0)
             return index;
         index++;
     }
@@ -192,7 +192,7 @@ png_node_t *__png_find(png_t *png, png_block_t *block) {
         return NULL;
 
     for (png_node_t* current = png->head; current; current = current->next)
-        if (block == current->block)
+        if (png_block_compare(block, current->block) == 0)
             return current;
 
     return NULL;

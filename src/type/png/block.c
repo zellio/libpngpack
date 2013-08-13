@@ -91,6 +91,10 @@ int png_block_destroy(png_block_t* block) {
     return 0;
 }
 
+int png_block_compare(png_block_t *self, png_block_t *other) {
+    return (int)(self - other);
+}
+
 int png_block_calculate_crc(png_block_t* block) {
     if (block == NULL)
         return -1;
