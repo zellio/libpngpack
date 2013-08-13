@@ -66,7 +66,7 @@ int png_clear(png_t *png) {
     return 0;
 }
 
-png_block_t* png_get_at(png_t* png, size_t index) {
+png_node_t *__png_get_at(png_t* png, size_t index) {
     if (png == NULL)
         return NULL;
 
@@ -77,15 +77,16 @@ png_block_t* png_get_at(png_t* png, size_t index) {
     while (index-- && (current_node = current_node->next));
 
     if (current_node)
-        return current_node->block;
-
+        return current_node;
     return NULL;
 }
 
-
-/*****************************************************************************
-
-
+png_block_t *png_get_at(png_t* png, size_t index) {
+    png_node_t *png_node = __png_get_at(png, index);
+    if (png_node != NULL)
+        return png_node->block;
+    return NULL;
+}
 
 int png_index_of(png_t* png, png_block_t* block) {
     if (png == NULL || block == NULL)
@@ -101,11 +102,11 @@ int png_index_of(png_t* png, png_block_t* block) {
     return -1;
 }
 
-int png_contains(png_t* png, png_block_t* block) {
+int png_contains(png_t *png, png_block_t *block) {
     return (png_index_of(png, block) != -1);
 }
 
-int png_add(png_t* png, png_block_t* block) {
+int png_add(png_t *png, png_block_t *block) {
     if (png == NULL)
         return -1;
 
@@ -116,8 +117,8 @@ int png_add(png_t* png, png_block_t* block) {
     if (node == NULL)
         return -3;
 
-    png_node_t* tail = png->tail;
-    png_node_t* prev = tail->prev;
+    png_node_t *tail = png->tail;
+    png_node_t *prev = tail->prev;
 
     prev->next = node;
     node->prev = prev;
@@ -131,15 +132,15 @@ int png_add(png_t* png, png_block_t* block) {
     return 0;
 }
 
-int png_add_at(png_t* png, png_block_t* block, size_t index) {
+int png_add_at(png_t *png, png_block_t *block, size_t index) {
     if (png == NULL)
         return -1;
 
     if (block == NULL)
         return -2;
 
-    png_node_t* at = png_get_at(png, index);
-    if (at == NULL || png_node_is_tail(at)) {
+    png_node_t *at = __png_get_at(png, index);
+    if (at == NULL || png_node_is_tail(at))
         return -3;
 
     png_node_t *node = png_node_create(block);
@@ -157,24 +158,18 @@ int png_add_at(png_t* png, png_block_t* block, size_t index) {
     return 0;
 }
 
-png_block_t* png_remove(png_t* png, png_block_t* block) {
+png_node_t *__png_remove(png_t* png, png_node_t *node) {
     if (png == NULL)
         return NULL;
 
     if (node == NULL)
         return NULL;
 
-    if (
+    if (png_node_is_head(node) || png_node_is_tail(node))
         return NULL;
 
-    if (block->data == PNG_DATA_SENTINEL_TAIL)
-        return NULL;
-
-    if (!(png_contains(png, node)))
-        return NULL;
-
-    png_node_t* prev = node->prev;
-    png_node_t* next = node->next;
+    png_node_t *prev = node->prev;
+    png_node_t *next = node->next;
 
     prev->next = next;
     next->prev = prev;
@@ -184,34 +179,38 @@ png_block_t* png_remove(png_t* png, png_block_t* block) {
 
     png->length -= 1;
 
-    png->size = PNG_BLOCK_BASE_SIZE - png_block_get_length(node->block);
+    png->size -= (PNG_BLOCK_BASE_SIZE + png_block_get_length(node->block));
 
     return node;
-
 }
 
-png_node_t* png_remove_at(png_t* png, size_t index) {
+png_node_t *__png_find(png_t *png, png_block_t *block) {
     if (png == NULL)
         return NULL;
 
-    png_node_t* at = png_get_at(png, index);
-    if (at == NULL)
+    if (block == NULL)
         return NULL;
 
-    if (at == png->head || at == png->tail)
-        return NULL;
+    for (png_node_t* current = png->head; current; current = current->next)
+        if (block == current->block)
+            return current;
 
-    png_node_t* prev = at->prev;
-    png_node_t* next = at->next;
-
-    prev->next = next;
-    next->prev = prev;
-
-    at->next = NULL;
-    at->prev = NULL;
-
-    png->size = PNG_BLOCK_BASE_SIZE - png_block_get_length(at->block);
-
-    return at;
+    return NULL;
 }
-*/
+
+png_block_t *png_remove(png_t *png, png_block_t *block) {
+    png_node_t *node = __png_remove(png, __png_find(png, block));
+    if (node == NULL)
+        return NULL;
+    png_node_destroy(node);
+    return block;
+}
+
+png_block_t *png_remove_at(png_t *png, size_t index) {
+    png_node_t *node = __png_get_at(png, index);
+    if (node == NULL)
+        return NULL;
+    png_block_t *block = node->block;
+    png_node_destroy(node);
+    return block;
+}

@@ -2,6 +2,8 @@
 
 #include "io/png.h"
 
+#include <stdlib.h>
+
 
 char* png_to_s(png_t* png) {
     if (png == NULL)
@@ -49,5 +51,26 @@ int png_io_write(png_t* png, FILE* fp) {
     return 0;
 }
 
-//int png_io_read(png_t* png, FILE* fp) {
-//}
+int png_io_read(png_t *png, FILE *fp) {
+    if (png == NULL)
+        return -1;
+
+    if (fp == NULL)
+        return -2;
+    /*
+    fseek(fp, 8, SEEK_CUR);
+
+    png_node_t *png_node;
+    png_block_t *png_block;
+
+
+    while (!feof(fp)) {
+        png_block = calloc(1, sizeof(png_block));
+        png_block_io_read(png_block, fp);
+        png_add(png_node_create(png_block));
+
+
+    }
+    */
+    return 0;
+}

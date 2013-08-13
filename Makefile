@@ -44,7 +44,7 @@ pngpack_context.type.o: type/pngpack_context.c type/pngpack_context.h
 memblk.io.o: io/memblk.c io/memblk.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
-png_block.io.o: io/png_block.c io/png_block.h
+png_block.io.o: io/png/block.c io/png/block.h
 	$(CC) $(CFLAGS) -I$(INCROOT) -o $(OBJROOT)/$(@) $(<)
 
 png.io.o: io/png.c io/png.h

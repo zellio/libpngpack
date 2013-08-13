@@ -1,6 +1,6 @@
 
 
-#include "io/png_block.h"
+#include "io/png/block.h"
 
 #include <stdlib.h>
 

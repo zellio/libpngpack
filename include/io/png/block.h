@@ -5,7 +5,7 @@
 
 
 #include "type/byte.h"
-#include "type/png_block.h"
+#include "type/png/block.h"
 
 #include <stdio.h>
 
