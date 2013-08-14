@@ -25,8 +25,8 @@ extern "C" {
 
 typedef struct png png_t;
 struct png {
-    png_node_t* head;
-    png_node_t* tail;
+    png_node_t *head;
+    png_node_t *tail;
     size_t length;
     size_t size;
 };
