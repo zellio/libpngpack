@@ -28,13 +28,13 @@ struct pngpack_context {
     byte encode;
     byte compress;
     byte encrypt;
-    byte* template;
-    byte* key;
+    byte *template;
+    byte *key;
 };
 
 pngpack_context_t*
-pngpack_context_create(int flags, byte* template, size_t size, byte* key);
-int pngpack_context_destroy(pngpack_context_t* ctx);
+pngpack_context_create(int flags, byte *template, size_t size, byte *key);
+int pngpack_context_destroy(pngpack_context_t *ctx);
 
 
 #ifdef __cplusplus

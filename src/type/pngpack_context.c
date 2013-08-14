@@ -6,8 +6,8 @@
 
 
 pngpack_context_t*
-pngpack_context_create(int flags, byte* template, size_t size, byte* key) {
-    pngpack_context_t* ctx = calloc(1, sizeof(pngpack_context_t));
+pngpack_context_create(int flags, byte *template, size_t size, byte *key) {
+    pngpack_context_t *ctx = calloc(1, sizeof(pngpack_context_t));
     if (ctx == NULL)
         goto PNGPACK_CONTEXT_CREATE_CLEANUP;
 
@@ -15,7 +15,7 @@ pngpack_context_create(int flags, byte* template, size_t size, byte* key) {
     ctx->compress = (flags & PNGPACK_COMPRESS);
     ctx->encrypt = (flags & PNGPACK_ENCRYPT);
 
-    byte* template_data = calloc(size, sizeof(byte));
+    byte *template_data = calloc(size, sizeof(byte));
     if (template_data == NULL)
         goto PNGPACK_CONTEXT_CREATE_CLEANUP;
     ctx->template = template_data;
@@ -23,7 +23,7 @@ pngpack_context_create(int flags, byte* template, size_t size, byte* key) {
         *template_data++ = *template++;
 
     if (key != NULL) {
-        byte* key_data = calloc(256, sizeof(byte));
+        byte *key_data = calloc(256, sizeof(byte));
         if (key_data == NULL)
             goto PNGPACK_CONTEXT_CREATE_CLEANUP;
 
@@ -39,7 +39,7 @@ pngpack_context_create(int flags, byte* template, size_t size, byte* key) {
     return NULL;
 }
 
-int pngpack_context_destroy(pngpack_context_t* ctx) {
+int pngpack_context_destroy(pngpack_context_t *ctx) {
     if (ctx == NULL)
         return -1;
 
