@@ -29,35 +29,35 @@ extern "C" {
 typedef struct memblk memblk_t;
 struct memblk {
     size_t size;
-    byte* data;
-    byte* ptr;
-    byte* end;
+    byte *data;
+    byte *ptr;
+    byte *end;
 };
 
 
-memblk_t* memblk_create(size_t size);
-int memblk_destroy(memblk_t* block);
+memblk_t *memblk_create(size_t size);
+int memblk_destroy(memblk_t *block);
 
-ssize_t memblk_write(memblk_t* block, byte* data, size_t count);
-ssize_t memblk_read(memblk_t* block, byte* data, size_t count);
-ssize_t memblk_seek(memblk_t* block, size_t offset, int whence);
-ssize_t memblk_rewind(memblk_t* block);
-ssize_t memblk_erase(memblk_t* block);
+ssize_t memblk_write(memblk_t *block, byte *data, size_t count);
+ssize_t memblk_read(memblk_t *block, byte *data, size_t count);
+ssize_t memblk_seek(memblk_t *block, size_t offset, int whence);
+ssize_t memblk_rewind(memblk_t *block);
+ssize_t memblk_erase(memblk_t *block);
 
-ssize_t memblk_write_uint32(memblk_t* block, uint32_t ui32);
-ssize_t memblk_read_uint32(memblk_t* block, uint32_t* ui32_ptr);
+ssize_t memblk_write_uint32(memblk_t *block, uint32_t ui32);
+ssize_t memblk_read_uint32(memblk_t *block, uint32_t *ui32_ptr);
 
-char* memblk_x64_encode(memblk_t* block);
-memblk_t* memblk_x64_decode(char* str);
+char *memblk_x64_encode(memblk_t *block);
+memblk_t *memblk_x64_decode(char *str);
 
-ssize_t memblk_contents_x64_encode(memblk_t* block);
-ssize_t memblk_contents_x64_decode(memblk_t* block);
+ssize_t memblk_contents_x64_encode(memblk_t *block);
+ssize_t memblk_contents_x64_decode(memblk_t *block);
 
-ssize_t memblk_contents_deflate(memblk_t* block);
-ssize_t memblk_contents_inflate(memblk_t* block);
+ssize_t memblk_contents_deflate(memblk_t *block);
+ssize_t memblk_contents_inflate(memblk_t *block);
 
-ssize_t memblk_contents_encrypt(memblk_t* block, EVP_CIPHER_CTX* ctx);
-ssize_t memblk_contents_decrypt(memblk_t* block, EVP_CIPHER_CTX* ctx);
+ssize_t memblk_contents_encrypt(memblk_t *block, EVP_CIPHER_CTX *ctx);
+ssize_t memblk_contents_decrypt(memblk_t *block, EVP_CIPHER_CTX *ctx);
 
 
 #ifdef __cplusplus

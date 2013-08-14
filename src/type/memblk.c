@@ -7,8 +7,8 @@
 #include <zlib.h>
 
 
-memblk_t* memblk_create(size_t size) {
-    memblk_t* block = calloc(1, sizeof(memblk_t));
+memblk_t *memblk_create(size_t size) {
+    memblk_t *block = calloc(1, sizeof(memblk_t));
     if (block == NULL)
         return NULL;
 
@@ -25,7 +25,7 @@ memblk_t* memblk_create(size_t size) {
     return block;
 }
 
-int memblk_destroy(memblk_t* block) {
+int memblk_destroy(memblk_t *block) {
     if (block == NULL)
         return -1;
 
@@ -39,9 +39,9 @@ int memblk_destroy(memblk_t* block) {
     return 0;
 }
 
-ssize_t memblk_read(memblk_t* block, byte* data, size_t count) {
-    byte* block_ptr = block->ptr;
-    byte* block_end = block->end;
+ssize_t memblk_read(memblk_t *block, byte *data, size_t count) {
+    byte *block_ptr = block->ptr;
+    byte *block_end = block->end;
 
     ssize_t write_count = 0;
     while (block_end != block_ptr && count--) {
@@ -53,7 +53,7 @@ ssize_t memblk_read(memblk_t* block, byte* data, size_t count) {
     return write_count;
 }
 
-ssize_t memblk_write(memblk_t* block, byte* data, size_t count) {
+ssize_t memblk_write(memblk_t *block, byte *data, size_t count) {
     byte* block_ptr = block->ptr;
     byte* block_end = block->end;
 
@@ -67,8 +67,8 @@ ssize_t memblk_write(memblk_t* block, byte* data, size_t count) {
     return write_count;
 }
 
-ssize_t memblk_seek(memblk_t* block, size_t offset, int whence) {
-    byte* start;
+ssize_t memblk_seek(memblk_t *block, size_t offset, int whence) {
+    byte *start;
     switch (whence) {
     case MEMBLK_SEEK_SET:  start = block->data;  break;
     case MEMBLK_SEEK_CUR:  start = block->ptr;   break;
@@ -76,8 +76,8 @@ ssize_t memblk_seek(memblk_t* block, size_t offset, int whence) {
     default: return -1;
     }
 
-    byte* target = start + offset;
-    byte* end = block->end;
+    byte *target = start + offset;
+    byte *end = block->end;
     if (target > end)
         return -2;
 
@@ -85,20 +85,20 @@ ssize_t memblk_seek(memblk_t* block, size_t offset, int whence) {
     return 0;
 }
 
-ssize_t memblk_rewind(memblk_t* block) {
+ssize_t memblk_rewind(memblk_t *block) {
     return memblk_seek(block, 0, MEMBLK_SEEK_SET);
 }
 
-ssize_t memblk_erase(memblk_t* block) {
-    byte* ptr = block->data;
+ssize_t memblk_erase(memblk_t *block) {
+    byte *ptr = block->data;
     size_t size = block->size;
     while (size--) *ptr++ = 0x00;
     return 0;
 }
 
 
-ssize_t memblk_write_uint32(memblk_t* block, uint32_t ui32) {
-    byte* ptr = block->ptr;
+ssize_t memblk_write_uint32(memblk_t *block, uint32_t ui32) {
+    byte *ptr = block->ptr;
     if (ptr + 4 > block->end)
         return -1;
 
@@ -112,8 +112,8 @@ ssize_t memblk_write_uint32(memblk_t* block, uint32_t ui32) {
     return 4;
 }
 
-ssize_t memblk_read_uint32(memblk_t* block, uint32_t* ui32_ptr) {
-    byte* ptr = block->ptr;
+ssize_t memblk_read_uint32(memblk_t *block, uint32_t *ui32_ptr) {
+    byte *ptr = block->ptr;
     if (ptr + 4 > block->end)
         return -1;
 
@@ -127,12 +127,12 @@ ssize_t memblk_read_uint32(memblk_t* block, uint32_t* ui32_ptr) {
 
 static char x64_digest_encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H','I', 'J', 'K', 'L', 'M', 'N', 'O', 'P','Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X','Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f','g', 'h', 'i', 'j', 'k', 'l', 'm', 'n','o', 'p', 'q', 'r', 's', 't', 'u', 'v','w', 'x', 'y', 'z', '0', '1', '2', '3','4', '5', '6', '7', '8', '9', '+', '/'};
 
-char* memblk_x64_encode(memblk_t* block) {
+char *memblk_x64_encode(memblk_t *block) {
     size_t size = block->size;
     size_t target_size = (size + 2) / 3 * 4;
 
-    char* out = calloc(1, target_size);
-    char* ptr = out;
+    char *out = calloc(1, target_size);
+    char *ptr = out;
 
     if (out == NULL)
         return NULL;
@@ -161,9 +161,9 @@ char* memblk_x64_encode(memblk_t* block) {
                       ((('0'<=(x))&&((x)<='9'))?((x)-'0'+52):     \
                        (((x)=='+')?(62):(((x)=='/')?(63):(0))))))
 
-memblk_t* memblk_x64_decode(char* x64str) {
+memblk_t *memblk_x64_decode(char *x64str) {
     size_t str_len = 0;
-    char* ptr = x64str;
+    char *ptr = x64str;
     while (*ptr++) str_len++;
 
     size_t size = str_len * 3 / 4;
@@ -171,8 +171,8 @@ memblk_t* memblk_x64_decode(char* x64str) {
     if (x64str[str_len - 1] == '=') size--;
     if (x64str[str_len - 2] == '=') size--;
 
-    memblk_t* memblk = memblk_create(size);
-    byte* data = memblk->data;
+    memblk_t *memblk = memblk_create(size);
+    byte *data = memblk->data;
 
     size_t i = 0;
     while (i < size) {
@@ -190,20 +190,20 @@ memblk_t* memblk_x64_decode(char* x64str) {
     return memblk;
 }
 
-ssize_t memblk_contents_x64_encode(memblk_t* block) {
+ssize_t memblk_contents_x64_encode(memblk_t *block) {
     size_t size = block->size;
     size_t target_size = (size + 2) / 3 * 4;
-    char* target_data = memblk_x64_encode(block);
+    char *target_data = memblk_x64_encode(block);
     block->data = (byte*)target_data;
     block->size = target_size;
     return target_size;
 }
 
-ssize_t memblk_contents_x64_decode(memblk_t* block) {
-    char* str = calloc(block->size + 1, sizeof(byte));
+ssize_t memblk_contents_x64_decode(memblk_t *block) {
+    char *str = calloc(block->size + 1, sizeof(byte));
     if (str == NULL) return -1;
     snprintf(str, block->size + 1, "%s", block->data);
-    memblk_t* new_block = memblk_x64_decode(str);
+    memblk_t *new_block = memblk_x64_decode(str);
     free(str);
     free(block->data);
     block->size = new_block->size;
@@ -212,11 +212,11 @@ ssize_t memblk_contents_x64_decode(memblk_t* block) {
     return block->size;
 }
 
-ssize_t memblk_contents_deflate(memblk_t* block) {
-    byte* data = block->data;
+ssize_t memblk_contents_deflate(memblk_t *block) {
+    byte *data = block->data;
     size_t size = block->size;
     size_t compressed_size = compressBound(size) + 4;
-    byte* buffer = calloc(compressed_size, sizeof(byte));
+    byte *buffer = calloc(compressed_size, sizeof(byte));
 
     if (buffer == NULL)
         return -1;
@@ -236,16 +236,16 @@ ssize_t memblk_contents_deflate(memblk_t* block) {
     return compressed_size;
 }
 
-ssize_t memblk_contents_inflate(memblk_t* block) {
-    byte* block_data = block->data;
+ssize_t memblk_contents_inflate(memblk_t *block) {
+    byte *block_data = block->data;
     size_t size = block->size;
 
     size_t decompressed_size;
     memblk_rewind(block);
     memblk_read_uint32(block, (uint32_t*)&decompressed_size);
-    byte* data = block->ptr;
+    byte *data = block->ptr;
 
-    byte* decompressed_data = calloc(decompressed_size, sizeof(byte));
+    byte *decompressed_data = calloc(decompressed_size, sizeof(byte));
     if (decompressed_data == NULL)
         return -1;
 
@@ -259,12 +259,12 @@ ssize_t memblk_contents_inflate(memblk_t* block) {
     return decompressed_size;
 }
 
-ssize_t memblk_contents_encrypt(memblk_t* block, EVP_CIPHER_CTX* ctx) {
-    byte* in_data = block->data;
+ssize_t memblk_contents_encrypt(memblk_t *block, EVP_CIPHER_CTX *ctx) {
+    byte *in_data = block->data;
     int32_t in_size = block->size;
 
     int32_t out_size = in_size + AES_BLOCK_SIZE - 1;
-    byte* out_data = calloc(out_size, sizeof(byte));
+    byte *out_data = calloc(out_size, sizeof(byte));
 
     if (out_data == NULL)
         return -1;
@@ -282,12 +282,12 @@ ssize_t memblk_contents_encrypt(memblk_t* block, EVP_CIPHER_CTX* ctx) {
     return out_size;
 }
 
-ssize_t memblk_contents_decrypt(memblk_t* block, EVP_CIPHER_CTX* ctx) {
-    byte* in_data = block->data;
+ssize_t memblk_contents_decrypt(memblk_t *block, EVP_CIPHER_CTX *ctx) {
+    byte *in_data = block->data;
     int32_t in_size = block->size;
 
     int32_t out_size = in_size + AES_BLOCK_SIZE - 1;
-    byte* out_data = calloc(out_size, sizeof(byte));
+    byte *out_data = calloc(out_size, sizeof(byte));
 
     if (out_data == NULL)
         return -1;
