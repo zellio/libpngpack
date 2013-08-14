@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 
-char* png_to_s(png_t* png) {
+char *png_to_s(png_t *png) {
     if (png == NULL)
         return NULL;
 
@@ -34,7 +34,7 @@ char* png_to_s(png_t* png) {
     return str;
 }
 
-int png_io_write(png_t* png, FILE* fp) {
+int png_io_write(png_t *png, FILE *fp) {
     if (png == NULL)
         return -1;
 

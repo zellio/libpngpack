@@ -18,9 +18,9 @@ extern "C" {
 #endif
 
 
-char* png_to_s(png_t* block);
-int png_io_write(png_t* block, FILE* fp);
-int png_io_read(png_t* block, FILE* fp);
+char *png_to_s(png_t *block);
+int png_io_write(png_t *block, FILE *fp);
+int png_io_read(png_t *block, FILE *fp);
 
 
 #ifdef __cplusplus
