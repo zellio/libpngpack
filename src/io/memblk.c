@@ -5,11 +5,11 @@
 #include <stdlib.h>
 
 
-char* memblk_to_s(memblk_t* block) {
+char *memblk_to_s(memblk_t *block) {
     if (block == NULL)
         return NULL;
 
-    char* str = calloc(block->size + 1, sizeof(byte));
+    char *str = calloc(block->size + 1, sizeof(byte));
     if (str == NULL)
         return NULL;
 
@@ -18,14 +18,14 @@ char* memblk_to_s(memblk_t* block) {
     return str;
 }
 
-int memblk_io_write(memblk_t* block, FILE* fp) {
+int memblk_io_write(memblk_t *block, FILE *fp) {
     if (block == NULL)
         return -1;
 
     if (fp == NULL)
         return -2;
 
-    char* str = memblk_to_s(block);
+    char *str = memblk_to_s(block);
     if (str == NULL)
         return -3;
 
@@ -35,7 +35,7 @@ int memblk_io_write(memblk_t* block, FILE* fp) {
     return 0;
 }
 
-int memblk_io_read(memblk_t* block, FILE* fp) {
+int memblk_io_read(memblk_t *block, FILE *fp) {
     if (block == NULL)
         return -1;
 

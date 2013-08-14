@@ -18,9 +18,9 @@ extern "C" {
 #endif
 
 
-char* memblk_to_s(memblk_t* block);
-int memblk_io_write(memblk_t* block, FILE* fp);
-int memblk_io_read(memblk_t* block, FILE* fp);
+char *memblk_to_s(memblk_t *block);
+int memblk_io_write(memblk_t *block, FILE *fp);
+int memblk_io_read(memblk_t *block, FILE *fp);
 
 
 #ifdef __cplusplus
