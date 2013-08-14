@@ -20,9 +20,9 @@ extern "C" {
 
 typedef struct png_node png_node_t;
 struct png_node {
-    struct png_node* prev;
-    struct png_node* next;
-    png_block_t* block;
+    struct png_node *prev;
+    struct png_node *next;
+    png_block_t *block;
 };
 
 
