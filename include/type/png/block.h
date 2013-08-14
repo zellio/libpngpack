@@ -22,27 +22,27 @@ extern "C" {
 
 typedef struct png_block png_block_t;
 struct png_block {
-    byte* length;
-    byte* type;
-    byte* data;
-    byte* crc;
+    byte *length;
+    byte *type;
+    byte *data;
+    byte *crc;
 };
 
 
-png_block_t* png_block_create_empty(void);
-png_block_t* png_block_create(uint32_t type, uint32_t size, byte* data);
-int png_block_destroy(png_block_t* block);
+png_block_t *png_block_create_empty(void);
+png_block_t *png_block_create(uint32_t type, uint32_t size, byte *data);
+int png_block_destroy(png_block_t *block);
 
 int png_block_compare(png_block_t *self, png_block_t *other);
 
-int png_block_calculate_crc(png_block_t* block);
+int png_block_calculate_crc(png_block_t *block);
 
-uint32_t png_block_get_length(png_block_t* block);
-uint32_t png_block_set_length(png_block_t* block, uint32_t value);
-uint32_t png_block_get_type(png_block_t* block);
-uint32_t png_block_set_type(png_block_t* block, uint32_t value);
-uint32_t png_block_get_crc(png_block_t* block);
-uint32_t png_block_set_crc(png_block_t* block, uint32_t value);
+uint32_t png_block_get_length(png_block_t *block);
+uint32_t png_block_set_length(png_block_t *block, uint32_t value);
+uint32_t png_block_get_type(png_block_t *block);
+uint32_t png_block_set_type(png_block_t *block, uint32_t value);
+uint32_t png_block_get_crc(png_block_t *block);
+uint32_t png_block_set_crc(png_block_t *block, uint32_t value);
 
 
 #ifdef __cplusplus
