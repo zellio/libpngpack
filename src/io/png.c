@@ -1,6 +1,7 @@
 
 
 #include "io/png.h"
+#include "io/png/block.h"
 
 #include <stdlib.h>
 
@@ -57,20 +58,20 @@ int png_io_read(png_t *png, FILE *fp) {
 
     if (fp == NULL)
         return -2;
-    /*
-    fseek(fp, 8, SEEK_CUR);
 
-    png_node_t *png_node;
-    png_block_t *png_block;
+    rewind(fp);
+    fseek(fp, 8, SEEK_CUR);      /* skip the header */
 
-
+    png_block_t *block;
     while (!feof(fp)) {
-        png_block = calloc(1, sizeof(png_block));
-        png_block_io_read(png_block, fp);
-        png_add(png_node_create(png_block));
-
-
+        block = png_block_create_empty();
+        png_block_io_read(block, fp);
+        if (png_block_get_type(block) == 0x49454e44) {
+            png_block_destroy(block);
+            return 0;
+        }
+        png_add(png, block);
     }
-    */
-    return 0;
+
+    return -4;
 }
