@@ -44,8 +44,6 @@ png_block_t *png_remove(png_t *png, png_block_t *block);
 png_block_t *png_remove_at(png_t *png, size_t index);
 
 
-
-
 #ifdef __cplusplus
 };
 #endif
