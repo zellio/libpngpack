@@ -19,6 +19,11 @@ extern "C" {
 
 #define PNG_BLOCK_BASE_SIZE 12
 
+#define PNG_BLOCK_CRITICAL_TYPE_IDHR 0x49444852
+#define PNG_BLOCK_CRITICAL_TYPE_PLTE 0x504C5445
+#define PNG_BLOCK_CRITICAL_TYPE_IDAT 0x49444154
+#define PNG_BLOCK_CRITICAL_TYPE_IEND 0x49454E44
+
 
 typedef struct png_block png_block_t;
 struct png_block {
@@ -30,7 +35,7 @@ struct png_block {
 
 
 png_block_t *png_block_create_empty(void);
-png_block_t *png_block_create(uint32_t type, uint32_t size, byte *data);
+png_block_t *png_block_create(uint32_t length, uint32_t type, byte *data);
 int png_block_destroy(png_block_t *block);
 
 int png_block_compare(png_block_t *self, png_block_t *other);

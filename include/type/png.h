@@ -1,4 +1,4 @@
-
+\
 
 #ifndef __LIBPNGPACK_TYPE_PNG_H__
 #define __LIBPNGPACK_TYPE_PNG_H__ 1

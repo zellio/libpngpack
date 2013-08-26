@@ -35,7 +35,7 @@ png_block_t *png_node_sentinel_head() {
 png_block_t *png_node_sentinel_tail() {
     static png_block_t *tail_block = NULL;
     if (tail_block == NULL)
-        tail_block = png_block_create(0x0, 0x49454e44, NULL);
+        tail_block = png_block_create(0x0, PNG_BLOCK_CRITICAL_TYPE_IEND, NULL);
     return tail_block;
 }
 

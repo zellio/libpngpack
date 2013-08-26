@@ -66,7 +66,7 @@ int png_io_read(png_t *png, FILE *fp) {
     while (!feof(fp)) {
         block = png_block_create_empty();
         png_block_io_read(block, fp);
-        if (png_block_get_type(block) == 0x49454e44) {
+        if (png_block_get_type(block) == PNG_BLOCK_CRITICAL_TYPE_IEND) {
             png_block_destroy(block);
             return 0;
         }
