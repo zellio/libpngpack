@@ -25,6 +25,18 @@ char* png_block_to_s(png_block_t* block) {
     return str;
 }
 
+char *png_block_inspect(png_block_t *block) {
+    char *str = calloc(64, sizeof(char));
+    char *ptr = str;
+
+    ptr += snprintf(ptr, 22, "#<PNG::BLOCK: lenght=");
+    ptr += snprintf(ptr, 17, "%d type=", png_block_get_length(block));
+    ptr += snprintf(ptr, 8, "\"%s\" ", block->type);
+    snprintf(ptr, 16, "crc=%#08x>", png_block_get_crc(block));
+
+    return str;
+}
+
 int png_block_io_read(png_block_t *block, FILE *fp) {
     if (block == NULL)
         return -1;
@@ -58,8 +70,9 @@ int png_block_io_read(png_block_t *block, FILE *fp) {
     fread(buffer, sizeof(byte), 4, fp);
     block->crc = buffer;
 
-    png_block_io_inspect(block);
-    printf("\n");
+    char * str = png_block_inspect(block);
+    printf( "%s\n", str);
+    free(str);
     fflush(stdout);
 
     return 0;
