@@ -10,17 +10,16 @@ char* png_block_to_s(png_block_t* block) {
     if (block == NULL)
         return NULL;
 
-    size_t block_size = png_block_get_length(block);
-    char* str = calloc(block_size + 13, sizeof(byte));
+    size_t block_len = png_block_get_length(block);
+    char* str = calloc(block_len + 13, sizeof(byte));
     if (str == NULL)
         return NULL;
 
     char* ptr = str;
-
-    snprintf(ptr, 5, "%s", block->length);               ptr += 4;
-    snprintf(ptr, 5, "%s", block->type);                 ptr += 4;
-    snprintf(ptr, block_size + 1, "%s", block->data);    ptr += block_size;
-    snprintf(ptr, 5, "%s", block->crc);
+    memcpy(ptr, block->length, 4);         ptr += 4;
+    memcpy(ptr, block->type,   4);         ptr += 4;
+    memcpy(ptr, block->data,   block_len); ptr += block_len;
+    memcpy(ptr, block->crc,    4);
 
     return str;
 }
@@ -69,11 +68,6 @@ int png_block_io_read(png_block_t *block, FILE *fp) {
         goto PNG_BLOCK_IO_READ_CLEANUP;
     fread(buffer, sizeof(byte), 4, fp);
     block->crc = buffer;
-
-    char * str = png_block_inspect(block);
-    printf( "%s\n", str);
-    free(str);
-    fflush(stdout);
 
     return 0;
 

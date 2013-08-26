@@ -4,7 +4,7 @@
 #include "io/png/block.h"
 
 #include <stdlib.h>
-
+#include <string.h>
 
 char *png_to_s(png_t *png) {
     if (png == NULL)
@@ -18,19 +18,21 @@ char *png_to_s(png_t *png) {
     png_node_t *current_node = png->head;
     png_block_t *cpb = current_node->block;
 
-    snprintf(ptr, 5, "%s", cpb->type);                   ptr += 4;
-    snprintf(ptr, 5, "%s", cpb->crc);                    ptr += 4;
 
-    size_t pb_length;
+    memcpy(ptr, cpb->type, 4);       ptr += 4;
+    memcpy(ptr, cpb->crc,  4);       ptr += 4;
+
+    size_t cpb_len;
     while ((current_node = current_node->next)) {
         cpb = current_node->block;
-        pb_length = png_block_get_length(cpb);
+        cpb_len = png_block_get_length(cpb);
 
-        snprintf(ptr, 5, "%s", cpb->length);             ptr += 4;
-        snprintf(ptr, 5, "%s", cpb->type);               ptr += 4;
-        snprintf(ptr, pb_length + 1, "%s", cpb->data);   ptr += pb_length;
-        snprintf(ptr, 5, "%s", cpb->crc);                ptr += 4;
+        memcpy(ptr, cpb->length, 4);       ptr += 4;
+        memcpy(ptr, cpb->type,   4);       ptr += 4;
+        memcpy(ptr, cpb->data,   cpb_len); ptr += cpb_len;
+        memcpy(ptr, cpb->crc,    4);       ptr += 4;
     }
+
 
     return str;
 }
