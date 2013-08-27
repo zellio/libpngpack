@@ -42,47 +42,68 @@ int png_block_io_read(png_block_t *block, FILE *fp) {
     if (fp == NULL)
         return -2;
 
-    byte *buffer = calloc(4, sizeof(byte));
-    if (buffer == NULL)
-        goto PNG_BLOCK_IO_READ_CLEANUP;
-    fread(buffer, sizeof(byte), 4, fp);
-    block->length = buffer;
+    byte *length_buffer = calloc(4, sizeof(byte));
+    if (length_buffer == NULL)
+        return -3;
+    fread(length_buffer, sizeof(byte), 4, fp);
+
+    byte *old_length = block->length;
+    block->length = length_buffer;
     size_t length = png_block_get_length(block);
 
-    buffer = calloc(4, sizeof(byte));
-    if (buffer == NULL)
-        goto PNG_BLOCK_IO_READ_CLEANUP;
-    fread(buffer, sizeof(byte), 4, fp);
-    block->type = buffer;
+    byte *type_buffer = NULL;
+    byte *data_buffer = NULL;
+    byte *crc_buffer = NULL;
 
-    buffer = calloc(length, sizeof(byte));
-    if (buffer == NULL)
+    type_buffer = calloc(4, sizeof(byte));
+    if (type_buffer == NULL)
         goto PNG_BLOCK_IO_READ_CLEANUP;
-    fread(buffer, sizeof(byte), length, fp);
-    block->data = buffer;
 
-    //fseek(fp, 4, SEEK_CUR);
-    //png_block_calculate_crc(block);
-    buffer = calloc(4, sizeof(byte));
-    if (buffer == NULL)
+    data_buffer = calloc(length, sizeof(byte));
+    if (data_buffer == NULL)
         goto PNG_BLOCK_IO_READ_CLEANUP;
-    fread(buffer, sizeof(byte), 4, fp);
-    block->crc = buffer;
+
+    crc_buffer = calloc(4, sizeof(byte));
+    if (crc_buffer == NULL)
+        goto PNG_BLOCK_IO_READ_CLEANUP;
+
+    // Length already read in
+    if (old_length)
+        free(old_length);
+    // Length already asinged
+
+    fread(type_buffer, sizeof(byte), 4, fp);
+    if (block->type)
+        free(block->type);
+    block->type = type_buffer;
+
+    fread(data_buffer, sizeof(byte), length, fp);
+    if (block->data)
+        free(block->data);
+    block->data = data_buffer;
+
+    fread(crc_buffer, sizeof(byte), 4, fp);
+    if (block->crc)
+        free(block->crc);
+    block->crc = crc_buffer;
 
     return 0;
 
  PNG_BLOCK_IO_READ_CLEANUP:
-    if (block->length)
-        memset(block->length, 0x00, 4);
-    if (block->type)
-        memset(block->type, 0x00, 4);
-    if (block->data)
-        memset(block->data, 0x00, length);
-    if (block->crc)
-        memset(block->crc, 0x00, 4);
-    return -3;
-}
+    free(block->length);
+    block->length = old_length;
 
+    if (type_buffer != NULL)
+        free(type_buffer);
+
+    if (data_buffer != NULL)
+        free(data_buffer);
+
+    if (crc_buffer != NULL)
+        free(crc_buffer);
+
+    return -4;
+}
 
 int png_block_io_write(png_block_t* block, FILE* fp) {
     if (block == NULL)
