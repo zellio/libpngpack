@@ -1,5 +1,4 @@
 
-
 #include "io/png/block.h"
 
 #include <stdlib.h>
@@ -68,22 +67,22 @@ int png_block_io_read(png_block_t *block, FILE *fp) {
         goto PNG_BLOCK_IO_READ_CLEANUP;
 
     // Length already read in
-    if (old_length)
+    if (old_length != NULL)
         free(old_length);
     // Length already asinged
 
     fread(type_buffer, sizeof(byte), 4, fp);
-    if (block->type)
+    if (block->type != NULL)
         free(block->type);
     block->type = type_buffer;
 
     fread(data_buffer, sizeof(byte), length, fp);
-    if (block->data)
+    if (block->data != NULL)
         free(block->data);
     block->data = data_buffer;
 
     fread(crc_buffer, sizeof(byte), 4, fp);
-    if (block->crc)
+    if (block->crc != NULL)
         free(block->crc);
     block->crc = crc_buffer;
 
